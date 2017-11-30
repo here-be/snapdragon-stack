@@ -1,0 +1,52 @@
+{
+  "name": "snapdragon-stack",
+  "description": "Snapdragon util for creating stacks.",
+  "version": "0.1.0",
+  "homepage": "https://github.com/jonschlinkert/snapdragon-stack",
+  "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
+  "repository": "jonschlinkert/snapdragon-stack",
+  "bugs": {
+    "url": "https://github.com/jonschlinkert/snapdragon-stack/issues"
+  },
+  "license": "MIT",
+  "files": [
+    "index.js"
+  ],
+  "main": "index.js",
+  "engines": {
+    "node": ">=4"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "gulp-format-md": "^1.0.0",
+    "mocha": "^4.0.1",
+    "snapdragon-node": "file:/usr/local/lib/node_modules/snapdragon-node",
+    "snapdragon-token": "file:/usr/local/lib/node_modules/snapdragon-token"
+  },
+  "keywords": [
+    "compile",
+    "compiler",
+    "convert",
+    "parse",
+    "parser",
+    "render",
+    "snapdragon",
+    "stack",
+    "transform"
+  ],
+  "verb": {
+    "toc": false,
+    "layout": "default",
+    "tasks": [
+      "readme"
+    ],
+    "plugins": [
+      "gulp-format-md"
+    ],
+    "lint": {
+      "reflinks": true
+    }
+  }
+}
