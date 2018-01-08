@@ -1,7 +1,7 @@
 {
   "name": "snapdragon-stack",
   "description": "Snapdragon utility for creating a stack.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/here-be/snapdragon-stack",
   "author": "Jon Schlinkert (https://github.com/jonschlinkert)",
   "repository": "here-be/snapdragon-stack",
