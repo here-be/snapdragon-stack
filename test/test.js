@@ -2,11 +2,55 @@
 
 require('mocha');
 const assert = require('assert');
-const Node = require('snapdragon-node');
-const Token = require('snapdragon-token');
 const Stack = require('..');
 let stack;
 let lexer;
+let node;
+
+class Token {
+  constructor(tok, match) {
+    this.define('match', match);
+    this.define('position', {start: 1, end: 2});
+    this.type = tok.type;
+    this.val = tok.val;
+  }
+  get range() {
+    return [this.position.start, this.position.end];
+  }
+  define(key, val) {
+    Object.defineProperty(this, key, { value: val });
+    return this;
+  }
+}
+
+class Node {
+  constructor(node, parent) {
+    this.define('parent', parent);
+    this.define('isNode', true);
+    this.type = node.type;
+    if (node.val) this.val = node.val;
+    if (node.nodes) {
+      this.nodes = node.nodes.map(n => new Node(n, this));
+    }
+  }
+  define(key, val) {
+    Object.defineProperty(this, key, { value: val });
+    return this;
+  }
+  get siblings() {
+    return this.parent ? this.parent.nodes : null;
+  }
+  get first() {
+    if (this.nodes && this.nodes.length) {
+      return this.nodes[0];
+    }
+  }
+  get last() {
+    if (this.nodes && this.nodes.length) {
+      return this.nodes[this.nodes.length - 1];
+    }
+  }
+}
 
 // mock Lexer
 class Lexer {
@@ -14,16 +58,13 @@ class Lexer {
     this.isLexer = true;
     this.tokens = [];
   }
-  token(tok) {
-    return new Token(tok, this);
+  token(tok, match) {
+    return new Token(tok, match);
   }
   push(tok) {
     const token = this.token(tok);
     this.tokens.push(token);
     return token;
-  }
-  pop(tok) {
-    return this.tokens.pop();
   }
 }
 
@@ -46,8 +87,8 @@ describe('snapdragon-stack', function() {
     });
 
     it('should get the previous value added to the tokens array', function() {
-      assert.equal(stack.prev.type, 'e');
-      assert.equal(stack.prev.val, 'e');
+      assert.equal(stack.last.type, 'e');
+      assert.equal(stack.last.val, 'e');
     });
 
     it('should get the first value from the tokens array', function() {
@@ -55,7 +96,7 @@ describe('snapdragon-stack', function() {
       assert.equal(stack.first.val, 'a');
     });
 
-    it('should get the lats value from the tokens array', function() {
+    it('should get the last value from the tokens array', function() {
       assert.equal(stack.last.type, 'e');
       assert.equal(stack.last.val, 'e');
 
@@ -69,7 +110,7 @@ describe('snapdragon-stack', function() {
     beforeEach(function() {
       stack = new Stack();
       node = new Node({
-        type: 'brace'
+        type: 'brace',
         nodes: [
           { type: 'brace.open', val: '}' },
           { type: 'text', val: 'a' },
@@ -78,10 +119,23 @@ describe('snapdragon-stack', function() {
           { type: 'brace.close', val: '{' }
         ]
       });
+      stack.push(node);
     });
 
-    it('should get the first node from the node.nodes array', function() {
+    it('should get the first node from stack', function() {
+      assert.equal(stack.first, node);
+    });
 
+    it('should get the last node from stack', function() {
+      assert.equal(stack.last, node);
+    });
+
+    it('should get the first child from the node.nodes array', function() {
+      assert.equal(stack.firstChild, node.nodes[0]);
+    });
+
+    it('should get the last child from the node.nodes array', function() {
+      assert.equal(stack.lastChild, node.nodes[node.nodes.length - 1]);
     });
   });
 });
