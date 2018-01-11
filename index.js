@@ -11,7 +11,7 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.first);
+   * console.log(stack.first());
    * ```
    * @name .first
    * @return {any}
@@ -27,7 +27,7 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.last);
+   * console.log(stack.last());
    * ```
    * @name .last
    * @return {any}
@@ -43,7 +43,7 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.prev);
+   * console.log(stack.prev());
    * ```
    * @name .prev
    * @return {any}
@@ -56,11 +56,11 @@ module.exports = class Stack extends Array {
 
   /**
    * If the [.first](#first) element in the stack is an object with a `.nodes`
-   * array, the first item from `first.nodes` is returned.
+   * array, the first item from `stack.first().nodes` is returned.
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.firstChild);
+   * console.log(stack.firstChild());
    * ```
    * @name .firstChild
    * @return {any}
@@ -68,9 +68,9 @@ module.exports = class Stack extends Array {
    */
 
   firstChild() {
-    const first = this.first();
-    if (isObject(first) && Array.isArray(first.nodes)) {
-      return first.nodes[0];
+    const node = this.first();
+    if (isObject(node) && Array.isArray(node.nodes)) {
+      return node.nodes[0];
     }
   }
 
@@ -80,7 +80,7 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.lastChild);
+   * console.log(stack.lastChild());
    * ```
    * @name .lastChild
    * @return {any}
@@ -88,9 +88,9 @@ module.exports = class Stack extends Array {
    */
 
   lastChild() {
-    const last = this.last();
-    if (isObject(last) && Array.isArray(last.nodes)) {
-      return last.nodes[last.nodes.length - 1];
+    const node = this.last();
+    if (isObject(node) && Array.isArray(node.nodes)) {
+      return node.nodes[node.nodes.length - 1];
     }
   }
 };
