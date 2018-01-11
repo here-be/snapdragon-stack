@@ -12,13 +12,13 @@ class Token {
     this.define('match', match);
     this.define('position', {start: 1, end: 2});
     this.type = tok.type;
-    this.val = tok.val;
+    this.value = tok.value;
   }
   get range() {
     return [this.position.start, this.position.end];
   }
-  define(key, val) {
-    Object.defineProperty(this, key, { value: val });
+  define(key, value) {
+    Object.defineProperty(this, key, { value: value });
     return this;
   }
 }
@@ -28,13 +28,13 @@ class Node {
     this.define('parent', parent);
     this.define('isNode', true);
     this.type = node.type;
-    if (node.val) this.val = node.val;
+    if (node.value) this.value = node.value;
     if (node.nodes) {
       this.nodes = node.nodes.map(n => new Node(n, this));
     }
   }
-  define(key, val) {
-    Object.defineProperty(this, key, { value: val });
+  define(key, value) {
+    Object.defineProperty(this, key, { value: value });
     return this;
   }
   get siblings() {
@@ -79,30 +79,30 @@ describe('snapdragon-stack', function() {
     beforeEach(function() {
       stack = new Stack();
       lexer = new Lexer();
-      stack.push(lexer.push({type: 'a', val: 'a'}));
-      stack.push(lexer.push({type: 'b', val: 'b'}));
-      stack.push(lexer.push({type: 'c', val: 'c'}));
-      stack.push(lexer.push({type: 'd', val: 'd'}));
-      stack.push(lexer.push({type: 'e', val: 'e'}));
+      stack.push(lexer.push({type: 'a', value: 'a'}));
+      stack.push(lexer.push({type: 'b', value: 'b'}));
+      stack.push(lexer.push({type: 'c', value: 'c'}));
+      stack.push(lexer.push({type: 'd', value: 'd'}));
+      stack.push(lexer.push({type: 'e', value: 'e'}));
     });
 
     it('should get the previous value added to the tokens array', function() {
-      assert.equal(stack.last.type, 'e');
-      assert.equal(stack.last.val, 'e');
+      assert.equal(stack.last().type, 'e');
+      assert.equal(stack.last().value, 'e');
     });
 
     it('should get the first value from the tokens array', function() {
-      assert.equal(stack.first.type, 'a');
-      assert.equal(stack.first.val, 'a');
+      assert.equal(stack.first().type, 'a');
+      assert.equal(stack.first().value, 'a');
     });
 
     it('should get the last value from the tokens array', function() {
-      assert.equal(stack.last.type, 'e');
-      assert.equal(stack.last.val, 'e');
+      assert.equal(stack.last().type, 'e');
+      assert.equal(stack.last().value, 'e');
 
-      stack.push(lexer.push({type: 'z', val: 'z'}));
-      assert.equal(stack.last.type, 'z');
-      assert.equal(stack.last.val, 'z');
+      stack.push(lexer.push({type: 'z', value: 'z'}));
+      assert.equal(stack.last().type, 'z');
+      assert.equal(stack.last().value, 'z');
     });
   });
 
@@ -112,30 +112,30 @@ describe('snapdragon-stack', function() {
       node = new Node({
         type: 'brace',
         nodes: [
-          { type: 'brace.open', val: '}' },
-          { type: 'text', val: 'a' },
-          { type: 'comma', val: ',' },
-          { type: 'text', val: 'b' },
-          { type: 'brace.close', val: '{' }
+          { type: 'brace.open', value: '}' },
+          { type: 'text', value: 'a' },
+          { type: 'comma', value: ',' },
+          { type: 'text', value: 'b' },
+          { type: 'brace.close', value: '{' }
         ]
       });
       stack.push(node);
     });
 
     it('should get the first node from stack', function() {
-      assert.equal(stack.first, node);
+      assert.equal(stack.first(), node);
     });
 
     it('should get the last node from stack', function() {
-      assert.equal(stack.last, node);
+      assert.equal(stack.last(), node);
     });
 
     it('should get the first child from the node.nodes array', function() {
-      assert.equal(stack.firstChild, node.nodes[0]);
+      assert.equal(stack.firstChild(), node.nodes[0]);
     });
 
     it('should get the last child from the node.nodes array', function() {
-      assert.equal(stack.lastChild, node.nodes[node.nodes.length - 1]);
+      assert.equal(stack.lastChild(), node.nodes[node.nodes.length - 1]);
     });
   });
 });

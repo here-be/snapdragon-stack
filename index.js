@@ -18,7 +18,7 @@ module.exports = class Stack extends Array {
    * @api public
    */
 
-  get first() {
+  first() {
     return this[0];
   }
 
@@ -34,24 +34,8 @@ module.exports = class Stack extends Array {
    * @api public
    */
 
-  get last() {
+  last() {
     return this[this.length - 1];
-  }
-
-  /**
-   * Alias for [.last](#last).
-   *
-   * ```js
-   * const Stack = require('snapdragon-stack');
-   * console.log(stack.current);
-   * ```
-   * @name .current
-   * @return {any}
-   * @api public
-   */
-
-  get current() {
-    return this.last;
   }
 
   /**
@@ -66,7 +50,7 @@ module.exports = class Stack extends Array {
    * @api public
    */
 
-  get prev() {
+  prev() {
     return this[this.length - 2];
   }
 
@@ -83,9 +67,10 @@ module.exports = class Stack extends Array {
    * @api public
    */
 
-  get firstChild() {
-    if (isObject(this.first) && Array.isArray(this.first.nodes)) {
-      return this.first.nodes[0];
+  firstChild() {
+    const first = this.first();
+    if (isObject(first) && Array.isArray(first.nodes)) {
+      return first.nodes[0];
     }
   }
 
@@ -102,9 +87,10 @@ module.exports = class Stack extends Array {
    * @api public
    */
 
-  get lastChild() {
-    if (isObject(this.last) && Array.isArray(this.last.nodes)) {
-      return this.last.nodes[this.last.nodes.length - 1];
+  lastChild() {
+    const last = this.last();
+    if (isObject(last) && Array.isArray(last.nodes)) {
+      return last.nodes[last.nodes.length - 1];
     }
   }
 };
