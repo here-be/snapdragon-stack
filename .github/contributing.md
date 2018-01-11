@@ -29,7 +29,7 @@ Please keep in mind that open source software is built by people like you, who s
 
 Don't have time to contribute? No worries, here are some other ways to show your support for snapdragon-stack:
 
-- star the [project](https://github.com/jonschlinkert/snapdragon-stack)
+- star the [project](https://github.com/here-be/snapdragon-stack)
 - tweet your support for snapdragon-stack
 
 ## Issues
