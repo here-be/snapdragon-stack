@@ -3,75 +3,24 @@
 require('mocha');
 const assert = require('assert');
 const Stack = require('..');
+const Lexer = require('./support/lexer');
+const Node = require('./support/node');
 let stack;
 let lexer;
 let node;
-
-class Token {
-  constructor(tok, match) {
-    this.define('match', match);
-    this.define('position', {start: 1, end: 2});
-    this.type = tok.type;
-    this.value = tok.value;
-  }
-  get range() {
-    return [this.position.start, this.position.end];
-  }
-  define(key, value) {
-    Object.defineProperty(this, key, { value: value });
-    return this;
-  }
-}
-
-class Node {
-  constructor(node, parent) {
-    this.define('parent', parent);
-    this.define('isNode', true);
-    this.type = node.type;
-    if (node.value) this.value = node.value;
-    if (node.nodes) {
-      this.nodes = node.nodes.map(n => new Node(n, this));
-    }
-  }
-  define(key, value) {
-    Object.defineProperty(this, key, { value: value });
-    return this;
-  }
-  get siblings() {
-    return this.parent ? this.parent.nodes : null;
-  }
-  get first() {
-    if (this.nodes && this.nodes.length) {
-      return this.nodes[0];
-    }
-  }
-  get last() {
-    if (this.nodes && this.nodes.length) {
-      return this.nodes[this.nodes.length - 1];
-    }
-  }
-}
-
-// mock Lexer
-class Lexer {
-  constructor() {
-    this.isLexer = true;
-    this.tokens = [];
-  }
-  token(tok, match) {
-    return new Token(tok, match);
-  }
-  push(tok) {
-    const token = this.token(tok);
-    this.tokens.push(token);
-    return token;
-  }
-}
 
 describe('snapdragon-stack', function() {
   describe('main export', function() {
     it('should be an instance of Array', function() {
       assert(new Stack() instanceof Array);
+    });
+
+    it('should have array methods', function() {
+      assert.equal(typeof new Stack().slice, 'function');
+      assert.equal(typeof new Stack().unshift, 'function');
+      assert.equal(typeof new Stack().shift, 'function');
+      assert.equal(typeof new Stack().push, 'function');
+      assert.equal(typeof new Stack().pop, 'function');
     });
   });
 
@@ -116,7 +65,17 @@ describe('snapdragon-stack', function() {
           { type: 'text', value: 'a' },
           { type: 'comma', value: ',' },
           { type: 'text', value: 'b' },
-          { type: 'brace.close', value: '{' }
+          { type: 'brace.close', value: '{' },
+          {
+            type: 'bracket',
+            nodes: [
+              { type: 'bracket.open', value: '}' },
+              { type: 'text', value: 'a' },
+              { type: 'comma', value: ',' },
+              { type: 'text', value: 'b' },
+              { type: 'bracket.close', value: '{' }
+            ]
+          }
         ]
       });
       stack.push(node);
@@ -135,7 +94,11 @@ describe('snapdragon-stack', function() {
     });
 
     it('should get the last child from the node.nodes array', function() {
-      assert.equal(stack.lastChild(), node.nodes[node.nodes.length - 1]);
+      const brace = node.nodes[node.nodes.length - 1];
+      const last = brace.nodes[brace.nodes.length - 1];
+
+      assert.equal(stack.lastChild(), last);
+      assert.equal(last.type, 'bracket.close');
     });
   });
 });

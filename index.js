@@ -11,7 +11,10 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.first());
+   * stack.push('a');
+   * stack.push('b');
+   * stack.push('c');
+   * console.log(stack.first()); //=> 'a'
    * ```
    * @name .first
    * @return {any}
@@ -27,7 +30,10 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.last());
+   * stack.push('a');
+   * stack.push('b');
+   * stack.push('c');
+   * console.log(stack.last()); //=> 'c'
    * ```
    * @name .last
    * @return {any}
@@ -43,7 +49,10 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.prev());
+   * stack.push('a');
+   * stack.push('b');
+   * stack.push('c');
+   * console.log(stack.prev()); //=> 'b'
    * ```
    * @name .prev
    * @return {any}
@@ -60,7 +69,15 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.firstChild());
+   * const Node = require('snapdragon-node');
+   *
+   * const node = new Node({ type: 'brace' });
+   * node.push(new Node({ type: 'brace.open', value: '{' }));
+   * node.push(new Node({ type: 'text', value: 'a,b,c' }));
+   * node.push(new Node({ type: 'brace.close', value: '}' }));
+   *
+   * stack.push(node);
+   * console.log(stack.firstChild()); //=> Node { type: 'brace.open', value: '{' }
    * ```
    * @name .firstChild
    * @return {any}
@@ -68,9 +85,9 @@ module.exports = class Stack extends Array {
    */
 
   firstChild() {
-    const node = this.first();
-    if (isObject(node) && Array.isArray(node.nodes)) {
-      return node.nodes[0];
+    const ele = this.first();
+    if (isObject(ele) && Array.isArray(ele.nodes)) {
+      return ele.nodes[0];
     }
   }
 
@@ -80,7 +97,15 @@ module.exports = class Stack extends Array {
    *
    * ```js
    * const Stack = require('snapdragon-stack');
-   * console.log(stack.lastChild());
+   * const Node = require('snapdragon-node');
+   *
+   * const node = new Node({ type: 'brace' });
+   * node.push(new Node({ type: 'brace.open', value: '{' }));
+   * node.push(new Node({ type: 'text', value: 'a,b,c' }));
+   * node.push(new Node({ type: 'brace.close', value: '}' }));
+   *
+   * stack.push(node);
+   * console.log(stack.lastChild()); //=> Node { type: 'brace.close', value: '}' }
    * ```
    * @name .lastChild
    * @return {any}
@@ -88,10 +113,11 @@ module.exports = class Stack extends Array {
    */
 
   lastChild() {
-    const node = this.last();
-    if (isObject(node) && Array.isArray(node.nodes)) {
-      return node.nodes[node.nodes.length - 1];
+    let ele = this.last();
+    while (isObject(ele) && Array.isArray(ele.nodes) && ele.nodes.length) {
+      ele = ele.nodes[ele.nodes.length - 1];
     }
+    return ele;
   }
 };
 
