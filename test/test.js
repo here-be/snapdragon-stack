@@ -89,6 +89,38 @@ describe('snapdragon-stack', function() {
       assert.equal(stack.last(), node);
     });
 
+    it('should look-behind n elements', function() {
+      stack.push('a');
+      stack.push('b');
+      stack.push('c');
+      stack.push('d');
+      stack.push('e');
+      stack.push('f');
+      stack.push('g');
+      stack.push('h');
+
+      assert.equal(stack.lookbehind(1), 'h');
+      assert.equal(stack.lookbehind(2), 'g');
+      assert.equal(stack.lookbehind(3), 'f');
+      assert.equal(stack.lookbehind(7), 'b');
+    });
+
+    it('should throw when argument is not a positive integer', function() {
+      stack.push('a');
+      stack.push('b');
+      stack.push('c');
+      stack.push('d');
+      stack.push('e');
+      stack.push('f');
+      stack.push('g');
+      stack.push('h');
+
+      assert.equal(stack.lookbehind(1), 'h');
+      assert.equal(stack.lookbehind(2), 'g');
+      assert.equal(stack.lookbehind(3), 'f');
+      assert.equal(stack.lookbehind(7), 'b');
+    });
+
     it('should get the first child from the node.nodes array', function() {
       assert.equal(stack.firstChild(), node.nodes[0]);
     });

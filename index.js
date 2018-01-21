@@ -1,5 +1,7 @@
 'use strict';
 
+const assert = require('assert');
+
 /**
  * Initialize a new `Stack`
  */
@@ -26,6 +28,30 @@ module.exports = class Stack extends Array {
   }
 
   /**
+   * Get the `n`th element from the end of the stack.
+   *
+   * ```js
+   * const stack = new Stack();
+   * stack.push('aaa');
+   * stack.push('bbb');
+   * stack.push('ccc');
+   * stack.push('ddd');
+   * console.log(stack.lookbehind(1)); //=> 'ddd'
+   * console.log(stack.lookbehind(2)); //=> 'ccc'
+   * console.log(stack.lookbehind(3)); //=> 'bbb'
+   * ```
+   * @name .lookbehind
+   * @param {Number} `n`
+   * @return {Object}
+   * @api public
+   */
+
+  lookbehind(n) {
+    assert.equal(n && typeof n, 'number', 'expected a number');
+    return this[this.length - Math.abs(n)];
+  }
+
+  /**
    * Get the last element in the stack.
    *
    * ```js
@@ -41,7 +67,24 @@ module.exports = class Stack extends Array {
    */
 
   last() {
-    return this[this.length - 1];
+    return this.lookbehind(1);
+  }
+
+  /**
+   * Semantic alias for `stack.last()`.
+   *
+   * ```js
+   * const Stack = require('snapdragon-stack');
+   * stack.push({ type: 'root' });
+   * console.log(stack.current()); //=> { type: 'root' }
+   * ```
+   * @name .current
+   * @return {any}
+   * @api public
+   */
+
+  current() {
+    return this.lookbehind(1);
   }
 
   /**
@@ -60,7 +103,7 @@ module.exports = class Stack extends Array {
    */
 
   prev() {
-    return this[this.length - 2];
+    return this.lookbehind(2);
   }
 
   /**
